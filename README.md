@@ -33,10 +33,27 @@ Customized implementation of the [U-Net](https://arxiv.org/abs/1505.04597) in Py
 ```bash
 pip install -r requirements.txt
 ```
+4. create the folders:
 
-4. Download the data and run training:
+   those directories will be used for the datasets:
+   - data/train_imgs
+   - data/train_masks
+   - data/validation_imgs
+   - data/validation_masks
+   - data/test_imgs
+   - data/test_masks
+
+   this directory will be used to store the checkpoints:
+   - checkpoints
+
+  
+   this directory store local data for weight and biases link to view training results:
+   - wandb
+     
+      
+    
+6. run training:
 ```bash
-bash scripts/download_data.sh
 python train.py --amp
 ```
 
