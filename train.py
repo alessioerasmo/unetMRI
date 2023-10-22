@@ -219,7 +219,7 @@ if __name__ == '__main__':
     # n_classes is the number of probabilities you want to get per pixel
     
     #model = UNet(n_channels=3, n_classes=args.classes, bilinear=args.bilinear) ORIGINALE
-    model = UNet(n_channels=1, n_classes=3, bilinear=args.bilinear)
+    model = UNet(n_channels=1, n_classes=2, bilinear=args.bilinear)
     model = model.to(memory_format=torch.channels_last)
 
     logging.info(f'Network:\n'
