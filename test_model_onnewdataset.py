@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from utils.data_loading import BasicDataset, CarvanaDataset, BasicAugmentedDataset
 from utils.dice_score import *
+from utils.test_loading import TestDataset
 from predict import predict_img
 from pathlib import Path
 import numpy as np
@@ -28,7 +29,7 @@ def hardening(array):
 dir_img = Path('data/test_imgs')
 dir_mask = Path('data/test_masks')
 
-test_set = CarvanaDataset(dir_img, dir_mask)
+test_set = TestDataset(dir_img, dir_mask)
 print('test set successfully loaded with: ', len(test_set), " images\n")
 
 
@@ -90,7 +91,7 @@ for i in range(len(masks)):
 print("- mask values in ", values,"\n\n")
 
 np_masks = np.array(masks, dtype='float32')
-#np_result = np.array(ress, dtype='int16')
+#np_result = np.array(ress, dtype='float32')
 np_result = np.array(hardening(ress), dtype='float32')
 #np_result = np.array(hardening_max(ress))
 
@@ -128,11 +129,11 @@ ROGUaffine = [[-6.97692811e-01, -5.33618592e-02, -2.84517370e-02,  1.08155357e+0
              [ 0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  1.00000000e+00]]
 
 
-nii_mask = nib.Nifti1Image(np_masks, affine=ROGUaffine)
-#nii_ress = nib.Nifti1Image(np_result, affine=ROGUaffine)
+#nii_mask = nib.Nifti1Image(np_masks, affine=GULEaffine)
+nii_ress = nib.Nifti1Image(np_result, affine=ROGUaffine)
 
-nib.save(nii_mask, "ConsensusROGU.nii.gz")
-#nib.save(nii_ress, "FuzzyClassifierROGU.nii.gz")
+#nib.save(nii_mask, "ConsensusGULE.nii.gz")
+nib.save(nii_ress, "FuzzyClassifierROGU.nii.gz")
 
 """
 from scipy.io import savemat
