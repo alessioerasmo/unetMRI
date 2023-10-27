@@ -64,7 +64,7 @@ def train_model(
         val_set = BasicDataset(dir_img_val, dir_mask_val, img_scale) 
     """
 
-    train_set = BasicAugmentedDataset(dir_img, dir_mask, img_scale, mask_suffix='_mask', augment_factor=1)
+    train_set = BasicAugmentedDataset(dir_img, dir_mask, img_scale, mask_suffix='_mask', augment_factor=5)
     
     val_set = CarvanaDataset(dir_img_val, dir_mask_val, img_scale) 
 

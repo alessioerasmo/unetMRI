@@ -163,13 +163,18 @@ class BasicAugmentedDataset(Dataset):
         img = load_image(img_file[0])
 
         if mod >= 1:
-            scale_factor = (random.random()*0.4)+0.8                                    # random scale between 0.8 and 1.2 
-            shear_factor = (random.random()*40)-20                                      # random shear between -20 and 20 
-            random_angle = (random.random()*30)-15                                      # random rotation between -15 and 15
-            random_translate= [(random.random()*80)-40,(random.random()*80)-40 ]      # random pixel translation
-            img = F.affine(img, angle=random_angle, translate=random_translate, scale=scale_factor, shear=shear_factor, interpolation=Image.NEAREST)
-            mask = F.affine(mask, angle=random_angle, translate=random_translate, scale=scale_factor, shear=shear_factor, interpolation=Image.NEAREST)
+
+            random_brightness = random.randint(50,200)/100                  # random brightness adjust between 0.5 and 2.0, 0.01 in resolution
+            random_zoom = random.randint(110,130)/100                       # random zoom between 1.1 and 1.3, 0.01 in resolution
+            random_translate = [random.randint(-15,15) for i in range(0,2)] # random translate y,x of +/- 15 px, 1px in resolution
+
+            noise = torch.randn(T.ToTensor()(img).size()) * 0.5 + 1         # random gaussian noise of mean 1 and standard deviation 0.5
             
+            img = T.ToPILImage()(T.ToTensor()(img) + noise/255)
+            img = F.adjust_brightness(img, random_brightness)
+            img = F.affine(img, scale=random_zoom, angle=0, translate=random_translate, shear=0, interpolation=Image.BILINEAR)
+            
+            mask = F.affine(mask, scale=random_zoom, angle=0, translate=random_translate, shear=0, interpolation=Image.NEAREST)
             
             # 50% of probabilities to do vertical flipping
             if random.random() >= 0.5:
@@ -216,9 +221,9 @@ if __name__ == '__main__':
         image = F.to_pil_image(res['image'])
         mask = res['mask']
 
+        
         f, axarr = plt.subplots(1,3)
         axarr[0].imshow(image)
         axarr[1].imshow(mask)
         axarr[2].imshow(np.array(image)-(np.array(mask)*255))
         plt.show()
-        print(mask)
