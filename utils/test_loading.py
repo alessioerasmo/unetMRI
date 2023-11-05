@@ -13,14 +13,35 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 import os
 
+import math
+def custom_order(name): #assumption on names of that shape: '01042GULE_125.jpg'
+    subject = name[5:9] 
+    base = 1
+    for i in range(len(subject)):
+        base *= ord(subject[i])
+    
+    num = ""
+    for i in range(10, len(name)):
+        try:
+            int(name[i])
+            num += name[i]
+        except:
+            break
+    return int(num) + base
+
+# name based ordering: XXXXXNAME_num, NAME can have only 4 chars
 class TestDataset(Dataset):
     def __init__(self, images_dir: str, mask_dir: str):
         self.images_dir = images_dir
         self.masks_dir = mask_dir
         self.imgs = os.listdir(images_dir)
-        self.imgs.sort()
+        self.imgs.sort(key=custom_order)
         self.masks = os.listdir(mask_dir)
-        self.masks.sort()
+        self.masks.sort(key=custom_order)
+        """
+        for obj in self.masks:
+            print(obj)
+        """
         assert len(self.imgs) == len(self.masks)
         self.length = len(self.masks)
 
@@ -43,15 +64,12 @@ class TestDataset(Dataset):
     
 
 if __name__ == '__main__':
-    test = TestDataset("data/test_imgs","data/test_masks" )
+    test = TestDataset("data/test_imgs/ROGU","data/test_masks/ROGU" )
     import matplotlib.pyplot as plt
-
-    for i in range(len(test)):
+    for i in range(180,len(test)):
         image, mask = test[i]['image'], test[i]['mask']
-        
         f, axarr = plt.subplots(1,2)
         axarr[0].imshow(image)
         axarr[1].imshow(mask)
         #axarr[2].imshow(np.array(image)-(np.array(mask)*255))
         plt.show()    
-    
