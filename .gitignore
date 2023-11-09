@@ -168,4 +168,5 @@ data_crispOmogen
 runs
 tests
 wandb
-scripts 
+scripts
+data*
